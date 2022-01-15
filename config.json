@@ -1,0 +1,15 @@
+{
+    "application": {
+        "server": {
+            "ip": "localhost",
+            "port": 8181,
+            "use_local_ip": false
+        }
+    },
+    "terminal": {
+
+    },
+    "logger": {
+
+    }
+}
