@@ -2,7 +2,7 @@
     "application": {
         "server": {
             "ip": "localhost",
-            "port": 8181,
+            "port": 8282,
             "use_local_ip": false
         }
     },

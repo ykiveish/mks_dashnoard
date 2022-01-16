@@ -7,6 +7,25 @@ from classes import application
 
 def signal_handler(signal, frame):
 	pass
+
+class Node():
+	def __init__(self):
+		self.CLI = None
+		self.APP = None
+	
+	def NodeUnhandledError(self):
+		self.CLI.Close()
+
+	def Start(self):
+		self.CLI = terminal.Terminal()
+		self.APP = application.Application()
+		self.APP.ErrorCallback = self.NodeUnhandledError
+
+		status = self.APP.Run()
+		if status is True:
+			if self.APP.FatalError is False:
+				self.CLI.Run() # Blocking
+				self.CLI.Close()
 	
 def main():
 	signal.signal(signal.SIGINT, signal_handler)
@@ -19,13 +38,9 @@ def main():
 	
 	args = parser.parse_args()
 
-	cli = terminal.Terminal()
-	app = application.Application()
-
-	app.Run()
-	cli.Run() # Blocking
+	node = Node()
+	node.Start()
 	
-	cli.Close()
 	print("Bye.")
 
 if __name__ == "__main__":

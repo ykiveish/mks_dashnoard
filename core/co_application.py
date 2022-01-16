@@ -8,6 +8,7 @@ from geventwebsocket import WebSocketServer, WebSocketApplication, Resource
 from core import co_webserver
 from core import co_definitions
 from core import co_file
+from mks import mks_config
 
 class WebsocketLayer():
 	def __init__(self):
@@ -113,7 +114,10 @@ class ApplicationLayer(co_definitions.ILayer):
 		}
 		self.Ip 	    = None
 		self.Port 	    = None
+		# TODO - Not all nodes hav HW
 		self.HW 		= None
+		self.Config 	= mks_config.NodeConfig()
+		self.Web		= None
 	
 	def SetIp(self, ip):
 		self.Ip = ip
@@ -122,15 +126,21 @@ class ApplicationLayer(co_definitions.ILayer):
 		self.Port = port
 	
 	def Run(self):
+		status = self.Config.Load()
+		if status is False:
+			print("ERROR - Wrong configuration format")
+			return False
+		
 		# Data for the pages.
 		web_data = {
-			'ip': str("localhost"),
+			'ip': str(self.Config.Application["server"]["ip"]),
 			'port': str(1981)
 		}
 		data = json.dumps(web_data)
-		web	= co_webserver.WebInterface("Context", 8181)
-		web.AddEndpoint("/", "index", None, data)
-		web.Run()
+		self.Web = co_webserver.WebInterface("Context", self.Config.Application["server"]["port"])
+		self.Web.ErrorEventHandler = self.WebErrorEvent
+		self.Web.AddEndpoint("/", "index", None, data)
+		self.Web.Run()
 
 		self.Start()
 
@@ -138,6 +148,11 @@ class ApplicationLayer(co_definitions.ILayer):
 		WSManager.RegisterCallbacks(self.WSConnectedHandler, self.WSDataArrivedHandler, self.WSDisconnectedHandler, self.WSSessionsEmpty)
 		WSManager.SetPort(1981)
 		WSManager.RunServer()
+
+		return True
+	
+	def WebErrorEvent(self):
+		pass
 	
 	def GetFileRequestHandler(self, sock, packet):
 		print("GetFileRequestHandler {0}".format(packet))

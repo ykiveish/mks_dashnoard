@@ -8,10 +8,18 @@ from core import co_application
 class Application(co_application.ApplicationLayer):
 	def __init__(self):
 		co_application.ApplicationLayer.__init__(self)
-        
+        # REST Handlers
 		self.WSHandlers["echo"] = self.EchoHandler
-		self.Working = False
+
+		self.Working 		= False
+		self.ErrorCallback 	= None
 	
+	def WebErrorEvent(self):
+		self.FatalError = True
+		if self.ErrorCallback is not None:
+			self.ErrorCallback()
+
+	# TODO - Move to upper layer
 	def Start(self):
 		_thread.start_new_thread(self.Worker, ())
 	

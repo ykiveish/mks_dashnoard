@@ -1,5 +1,7 @@
+import subprocess
 from core import co_definitions
 from core import co_terminal
+from core import co_file
 
 class Terminal(co_terminal.TerminalLayer):
 	def __init__(self):
@@ -8,6 +10,7 @@ class Terminal(co_terminal.TerminalLayer):
 		self.Handlers       = {
 			"help":         self.HelpHandler,
 			"echo":    		self.EchoHandler,
+			"app":			self.AppHandler,
 			"exit":			self.ExitHandler,
 		}
 	
@@ -21,6 +24,13 @@ class Terminal(co_terminal.TerminalLayer):
 
 	def EchoHandler(self, data):
 		pass
+
+	def AppHandler(self, data):
+		# Generate command
+		cmd = '"c:\program files (x86)\Google\Chrome\Application\chrome.exe" --window-size=1400,800 -incognito --app="http://{0}:{1}"'.format(str(self.Config.Application["server"]["ip"]), str(self.Config.Application["server"]["port"]))
+		objFile = co_file.File()
+		objFile.Save("ui.cmd", cmd)
+		subprocess.call(["ui.cmd"])
 
 	def ExitHandler(self, data):
 		self.Exit()

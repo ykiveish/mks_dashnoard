@@ -35,4 +35,4 @@ class ITask():
 
 class ILayer():
 	def __init__(self):
-		pass
+		self.FatalError = False

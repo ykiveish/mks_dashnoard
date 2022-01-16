@@ -34,6 +34,9 @@ class WebInterface():
 		self.ClassName 	= "WebInterface"
 		self.App 		= Flask(name)
 		self.Port 		= port
+		self.FlaskError	= False
+
+		self.ErrorEventHandler = None
 
 		# self.App.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 		# CORS(self.App)
@@ -43,7 +46,13 @@ class WebInterface():
 
 	def WebInterfaceWorker_Thread(self):
 		print ("({classname})# Starting local webface on port ({port}) ...".format(classname=self.ClassName, port=str(self.Port)))
-		self.App.run(host='0.0.0.0', port=self.Port)
+		try:
+			self.App.run(host='0.0.0.0', port=self.Port)
+		except Exception as e:
+			print("WebInterfaceWorker_Thread Exception: {0}".format(str(e)))
+			self.FlaskError = True
+			if self.ErrorEventHandler is not None:
+				self.ErrorEventHandler()
 
 	def Run(self):
 		_thread.start_new_thread(self.WebInterfaceWorker_Thread, ())
