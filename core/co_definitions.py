@@ -36,3 +36,6 @@ class ITask():
 class ILayer():
 	def __init__(self):
 		self.FatalError = False
+	
+	def Run(self):
+		pass

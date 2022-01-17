@@ -1,9 +1,19 @@
 {
     "application": {
         "server": {
-            "ip": "localhost",
-            "port": 8282,
-            "use_local_ip": false
+            "address": {
+                "ip": "localhost",
+                "use_local_ip": false
+            },  
+            "web": {
+                "port": 8282
+            },
+            "web_socket": {
+                "port": 1981
+            },
+            "socket": {
+                "port": 10081
+            }
         }
     },
     "terminal": {

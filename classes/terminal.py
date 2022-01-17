@@ -27,7 +27,7 @@ class Terminal(co_terminal.TerminalLayer):
 
 	def AppHandler(self, data):
 		# Generate command
-		cmd = '"c:\program files (x86)\Google\Chrome\Application\chrome.exe" --window-size=1400,800 -incognito --app="http://{0}:{1}"'.format(str(self.Config.Application["server"]["ip"]), str(self.Config.Application["server"]["port"]))
+		cmd = '"c:\program files (x86)\Google\Chrome\Application\chrome.exe" --window-size=1400,800 -incognito --app="http://{0}:{1}"'.format(str(self.Config.Application["server"]["address"]["ip"]), str(self.Config.Application["server"]["web"]["port"]))
 		objFile = co_file.File()
 		objFile.Save("ui.cmd", cmd)
 		subprocess.call(["ui.cmd"])

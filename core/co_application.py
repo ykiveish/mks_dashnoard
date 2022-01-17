@@ -133,11 +133,11 @@ class ApplicationLayer(co_definitions.ILayer):
 		
 		# Data for the pages.
 		web_data = {
-			'ip': str(self.Config.Application["server"]["ip"]),
-			'port': str(1981)
+			'ip': str(self.Config.Application["server"]["address"]["ip"]),
+			'port': str(self.Config.Application["server"]["web_socket"]["port"])
 		}
 		data = json.dumps(web_data)
-		self.Web = co_webserver.WebInterface("Context", self.Config.Application["server"]["port"])
+		self.Web = co_webserver.WebInterface("Context", self.Config.Application["server"]["web"]["port"])
 		self.Web.ErrorEventHandler = self.WebErrorEvent
 		self.Web.AddEndpoint("/", "index", None, data)
 		self.Web.Run()
@@ -146,7 +146,7 @@ class ApplicationLayer(co_definitions.ILayer):
 
 		time.sleep(0.5)
 		WSManager.RegisterCallbacks(self.WSConnectedHandler, self.WSDataArrivedHandler, self.WSDisconnectedHandler, self.WSSessionsEmpty)
-		WSManager.SetPort(1981)
+		WSManager.SetPort(self.Config.Application["server"]["web_socket"]["port"])
 		WSManager.RunServer()
 
 		return True
