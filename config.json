@@ -1,18 +1,22 @@
 {
     "application": {
+        "name": "Dashboard",
         "server": {
             "address": {
                 "ip": "localhost",
                 "use_local_ip": false
             },  
             "web": {
-                "port": 8282
+                "port": 8383
             },
             "web_socket": {
-                "port": 1981
+                "port": 1983
             },
             "socket": {
-                "port": 10081
+                "port": 10083
+            },
+            "broadcast": {
+                "port": 5007
             }
         }
     },

@@ -11,3 +11,10 @@ Pidaptor.prototype.Echo = function(sensor_id, callback) {
         callback(data, error);
     });
 }
+Pidaptor.prototype.GetNodes = function(callback) {
+    this.API.SendCustomCommand("nodes", {
+        "async": false
+    }, function(data, error) {
+        callback(data, error);
+    });
+}

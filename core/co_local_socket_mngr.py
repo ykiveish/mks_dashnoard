@@ -20,6 +20,8 @@ class SocketHive():
 		self.ServerRunning				= True
 
 		self.SocketDataArrivedCallback 	= None
+		self.SocketClosedCallback 		= None
+		self.SocketCreatedCallback 		= None
 	
 	def Run(self):
 		_thread.start_new_thread(self.ServerThread, ())
@@ -30,6 +32,8 @@ class SocketHive():
 	def SocketQueueHandler(self, item):
 		if "new_sock" in item["type"]:
 			self.EnhiveSocket(item["data"]["sock"], item["data"]["ip"], item["data"]["port"])
+			if self.SocketCreatedCallback is not None:
+				self.SocketCreatedCallback(item["data"])
 		elif "new_data" in item["type"]:
 			sock = item["data"]["sock"]
 			if sock not in self.SockMap:
@@ -48,7 +52,14 @@ class SocketHive():
 			if sock not in self.SockMap:
 				return
 			sock_info = self.SockMap[sock]
-			self.DehiveSocket(sock_info["ip"], sock_info["port"])
+			ip = sock_info["ip"]
+			port = sock_info["port"]
+			self.DehiveSocket(ip, port)
+			if self.SocketClosedCallback is not None:
+				self.SocketClosedCallback({
+					"ip": ip,
+					"port": port
+				})
 		elif "send" in item["type"]:
 			hash_key = item["data"]["hash"]
 			data = item["data"]["data"]
@@ -194,12 +205,30 @@ class Networking(co_definitions.ILayer):
 		co_definitions.ILayer.__init__(self)
 		self.Hive = SocketHive()
 		self.Hive.SocketDataArrivedCallback = self.SocketDataArrivedHandler
+		self.Hive.SocketClosedCallback = self.SocketClosedHandler
+		self.Hive.SocketCreatedCallback	= self.SocketCreatedHandler
 		self.DataArrivedEventQueue = None
+	
+	def SocketCreatedHandler(self, data):
+		if self.DataArrivedEventQueue is not None:
+			self.DataArrivedEventQueue.QueueItem({
+				"name": "new",
+				"data": data
+			})
+
+	def SocketClosedHandler(self, data):
+		if self.DataArrivedEventQueue is not None:
+			self.DataArrivedEventQueue.QueueItem({
+				"name": "closed",
+				"data": data
+			})
 	
 	def SocketDataArrivedHandler(self, data):
 		if self.DataArrivedEventQueue is not None:
-			self.DataArrivedEventQueue.QueueItem(data)
-		# print("#(SocketDataArrivedHandler)# {0}:{1} -> {2}".format(data["sock_info"]["ip"], data["sock_info"]["port"], data["data"]))
+			self.DataArrivedEventQueue.QueueItem({
+				"name": "data",
+				"data": data
+			})
 
 	def Run(self):
 		self.Hive.Run()

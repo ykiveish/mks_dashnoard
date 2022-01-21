@@ -125,6 +125,12 @@ class ApplicationLayer(co_definitions.ILayer):
 	def SetPort(self, port):
 		self.Port = port
 	
+	def Worker(self):
+		pass
+	
+	def Start(self):
+		_thread.start_new_thread(self.Worker, ())
+	
 	def Run(self):
 		status = self.Config.Load()
 		if status is False:

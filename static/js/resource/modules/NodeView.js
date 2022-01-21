@@ -1,4 +1,4 @@
-function TemplateModuleView() {
+function NodeView() {
     var self = this;
 
     // Modules basic
@@ -12,19 +12,19 @@ function TemplateModuleView() {
     return this;
 }
 
-TemplateModuleView.prototype.SetObjectDOMName = function(name) {
+NodeView.prototype.SetObjectDOMName = function(name) {
     this.DOMName = name;
 }
 
-TemplateModuleView.prototype.SetHostingID = function(id) {
+NodeView.prototype.SetHostingID = function(id) {
     this.HostingID = id;
 }
 
-TemplateModuleView.prototype.Build = function(data, callback) {
+NodeView.prototype.Build = function(data, callback) {
     var self = this;
 
     app.API.GetFileContent({
-        "file_path": "modules/TemplateModuleView.html"
+        "file_path": "modules/NodeView.html"
     }, function(res) {
         // Get payload
         var payload = res.payload;
@@ -37,6 +37,7 @@ TemplateModuleView.prototype.Build = function(data, callback) {
         if (self.HostingObject !== undefined && self.HostingObject != null) {
             self.HostingObject.innerHTML = self.HTML;
         }
+
         // Call callback
         if (callback !== undefined && callback != null) {
             callback(self);
@@ -44,15 +45,28 @@ TemplateModuleView.prototype.Build = function(data, callback) {
     });
 }
 
-TemplateModuleView.prototype.Clean = function() {
+NodeView.prototype.Clean = function() {
 }
 
-TemplateModuleView.prototype.Hide = function() {
+NodeView.prototype.Hide = function() {
     var self = this;
     this.ComponentObject.classList.add("d-none")
 }
 
-TemplateModuleView.prototype.Show = function() {
+NodeView.prototype.Show = function() {
     var self = this;
     this.ComponentObject.classList.remove("d-none")
+}
+
+NodeView.prototype.Back = function() {
+    var self = this;
+    console.log("Back");
+    //this.Disconnect();
+    window.ApplicationModules.DashboardView.Build(null, function(module) {});
+}
+
+NodeView.prototype.CallNode = function(hash, ip, port) {
+    var self = this;
+    console.log("CallNode");
+    document.getElementById("id_m_nodeview_iframe").src = "http://"+ip+":"+port;
 }

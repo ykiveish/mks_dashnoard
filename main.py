@@ -4,7 +4,6 @@ import argparse
 
 from classes import terminal
 from classes import application
-from core import co_local_socket_mngr
 
 def signal_handler(signal, frame):
 	pass
@@ -22,16 +21,11 @@ class Node():
 		self.APP = application.Application()
 		self.APP.ErrorCallback = self.NodeUnhandledError
 
-		net = co_local_socket_mngr.Networking()
-		net.Run()
-
 		status = self.APP.Run()
 		if status is True:
 			if self.APP.FatalError is False:
 				self.CLI.Run() # Blocking
 				self.CLI.Close()
-		
-		net.Stop()
 	
 def main():
 	signal.signal(signal.SIGINT, signal_handler)

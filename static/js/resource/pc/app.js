@@ -40,7 +40,8 @@ Application.prototype.Connect = function(ip, port, callback) {
         console.log("Connected to local websocket");
 
         // Module area
-        self.API.AppendModule("TemplateModuleView");
+        self.API.AppendModule("DasboardView");
+        self.API.AppendModule("NodeView");
         self.API.GetModules();
 
         callback();
@@ -48,10 +49,14 @@ Application.prototype.Connect = function(ip, port, callback) {
 }
 Application.prototype.NodeLoaded = function () {
     console.log("Modules Loaded");
-    window.ApplicationModules.DashboardView = new TemplateModuleView();
+    window.ApplicationModules.DashboardView = new DasboardView();
     window.ApplicationModules.DashboardView.SetHostingID("id_application_view_module");
-    window.ApplicationModules.DashboardView.SetObjectDOMName("window.ApplicationModules.TemplateModuleView");
+    window.ApplicationModules.DashboardView.SetObjectDOMName("window.ApplicationModules.DasboardView");
     window.ApplicationModules.DashboardView.Build(null, function(module) {});
+
+    window.ApplicationModules.NodeView = new NodeView();
+    window.ApplicationModules.NodeView.SetHostingID("id_application_view_module");
+    window.ApplicationModules.NodeView.SetObjectDOMName("window.ApplicationModules.NodeView");
 }
 Application.prototype.OnChangeEvent = function(packet) {
     var event = packet.payload.event;
@@ -62,10 +67,15 @@ Application.prototype.OnChangeEvent = function(packet) {
 Application.prototype.UndefinedHandler = function(data, scope) {
     console.log(data);
 }
+Application.prototype.NodesHandler = function(data, scope) {
+    console.log(data);
+    window.ApplicationModules.DashboardView.UpdateNodes()
+}
 
 var app = new Application();
 
 app.RegisterEventHandler("undefined", app.UndefinedHandler, app);
+app.RegisterEventHandler("nodes", app.NodesHandler, app);
 app.Connect(global_ip, global_port, function() {});
 
 feather.replace();
