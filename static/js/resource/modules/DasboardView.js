@@ -52,12 +52,12 @@ DasboardView.prototype.Clean = function() {
 
 DasboardView.prototype.Hide = function() {
     var self = this;
-    this.ComponentObject.classList.add("d-none")
+    this.ComponentObject.classList.add("d-none");
 }
 
 DasboardView.prototype.Show = function() {
     var self = this;
-    this.ComponentObject.classList.remove("d-none")
+    this.ComponentObject.classList.remove("d-none");
 }
 
 DasboardView.prototype.UpdateNodes = function() {

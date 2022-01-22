@@ -7,7 +7,7 @@
         <link href="{{ url_for('static', filename='lib/bootstrap/css/docs.min.css') }}" rel="stylesheet">
     </head>
     <body>
-        <nav class="navbar navbar-dark bg-dark flex-md-nowrap p-0 shadow">
+        <nav class="navbar navbar-dark bg-dark flex-md-nowrap p-0 shadow" id="id_application_navbar_container">
             <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Application</a>
             <ul class="navbar-nav px-3">
                 <li class="nav-item text-nowrap">
@@ -45,6 +45,17 @@
 
             var global_ip    = web_data.ip;
             var global_port  = web_data.port;
+
+            var queryString = window.location.search;
+            var view = "app";
+            const urlParams = new URLSearchParams(queryString);
+            if (urlParams.has('view')) {
+                view = urlParams.get('view');
+            }
+
+            if (view == "nested") {
+                document.getElementById("id_application_navbar_container").classList.add("d-none");
+            }
 
             var AppLoader = new Loader();
             AppLoader.Connect(function() {

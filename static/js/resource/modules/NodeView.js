@@ -68,5 +68,5 @@ NodeView.prototype.Back = function() {
 NodeView.prototype.CallNode = function(hash, ip, port) {
     var self = this;
     console.log("CallNode");
-    document.getElementById("id_m_nodeview_iframe").src = "http://"+ip+":"+port;
+    document.getElementById("id_m_nodeview_iframe").src = "http://"+ip+":"+port+"/?view=nested";
 }
